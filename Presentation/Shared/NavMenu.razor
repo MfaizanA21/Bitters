@@ -1,0 +1,73 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href=""></a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="sidebar-container">
+    <div class="sidebar @NavMenuCssClass">
+        <nav class="flex-column">
+            <!-- Add the extracted navigation links here -->
+            <AuthorizeView Roles="User">
+            </AuthorizeView>
+
+            <AuthorizeView Roles="Administrator">
+                
+                <NotAuthorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                            <span class="oi oi-home" aria-hidden="true"></span> Home
+                        </NavLink>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
+
+            <AuthorizeView Roles="Administrator">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="simple">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> All Products
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+
+            <AuthorizeView Roles="Administrator">
+                <Authorized>
+                    <div class "nav-item px-3">
+                        <NavLink class="nav-link" href="saveproducts">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Add Products
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+
+            <AuthorizeView Roles="User">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="productforuser">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> Products
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </nav>
+    </div>
+    <div class="main-content">
+        <!-- Your main content here -->
+    </div>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapsed" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -1,0 +1,27 @@
+﻿@page "/saveproducts"
+@page "/saveproducts/{id}"
+@inject NavigationManager nm
+
+<h3>SaveProducts</h3>
+Product Id is @id
+
+<EditForm Model="modelProducts" OnSubmit="SaveProduct">
+    <input type="text" placeholder="Product Name" @bind-value="modelProducts.Name" />
+    <input type="text" placeholder="Category" @bind-value="modelProducts.Category" />
+    <input type="text" placeholder="Description" @bind-value="modelProducts.Description" />
+    <input type="number" placeholder="Price" @bind-value="modelProducts.Price" />
+    <button type="submit">Save</button>
+
+</EditForm>
+
+@code {
+
+    [Parameter]public string? id{ get; set; }
+    ModelProducts modelProducts { get; set; } = new ModelProducts();
+
+    private void SaveProduct()
+    {
+        DalProducts.SaveProducts(modelProducts);
+        nm.NavigateTo("simple");
+    }
+}

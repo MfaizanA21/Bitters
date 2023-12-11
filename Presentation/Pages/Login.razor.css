@@ -1,0 +1,57 @@
+﻿/* Reset some default styles */
+body {
+    background: url('https://i0.wp.com/watchilove.com/wp-content/uploads/2022/02/c4637b5d-rado_true_secret_r27107742_uvp-2320-eur_5-e1644172697650.jpg?resize=678%2C381&ssl=1') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+}
+
+/* Style for the "LOGIN TO BITTER" header */
+h1 {
+    font-size: 2em;
+    text-align: center;
+    color: #333;
+}
+
+.loginText h1 {
+    font-size: 500%;
+    font-family: 'Global Serif';
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    color: #333;
+    background-color: #f0cdaa;
+}
+
+/* Style for input fields */
+input.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style for the "Login" button */
+button.btn-primary {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+    /* Apply hover styles to the button */
+    button.btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+/* Red border for empty input fields */
+.input-error {
+    border: 2px solid red;
+}

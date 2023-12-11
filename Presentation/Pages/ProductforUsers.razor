@@ -1,0 +1,36 @@
+﻿@page "/productforuser"
+@attribute [Authorize(Roles = "User")];
+
+<link rel="stylesheet" href="/css/ProductforUsers.css" />
+
+@using ModelLayer
+@using DataAccessLayer
+
+<h3 class="Prod-Text">Products</h3>
+
+<table class="table">
+    @foreach (var product in products)
+    {
+        <tr>
+            <td class="Prod-ID">@product.ProductId</td>
+            <td class="Prod-Name">@product.Name</td>
+            <td class="Prod-Price">$@product.Price</td>
+            <td class="Prod-Desc">@product.Description</td>
+            <td class="Prod-Cat">@product.Category</td>
+        </tr>
+    }
+</table>
+
+@code {
+    List<ModelProducts> products = new List<ModelProducts>();
+
+    protected override void OnInitialized()
+    {
+        LoadProducts();
+    }
+
+    private void LoadProducts()
+    {
+        products = DalProducts.GetProducts();
+    }
+}

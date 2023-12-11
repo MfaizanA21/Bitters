@@ -1,0 +1,24 @@
+/* Add styles for sidebar container */
+.sidebar-container {
+    display: flex;
+}
+
+/* Style for the collapsed sidebar */
+.sidebar.collapsed {
+    width: 0; /* Hide the sidebar */
+    transition: width 0.3s;
+}
+
+/* Style for the expanded sidebar */
+.sidebar {
+    width: 250px; /* Adjust the width as needed */
+    transition: width 0.3s;
+    background-color: #333; /* Sidebar background color */
+    color: #fff; /* Text color in the sidebar */
+}
+
+/* Style for the main content */
+.main-content {
+    flex-grow: 1; /* Allow main content to grow and take up remaining space */
+    padding: 20px; /* Add some padding to the main content */
+}

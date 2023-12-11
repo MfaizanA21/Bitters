@@ -1,0 +1,52 @@
+﻿@page "/simple"
+@attribute [Authorize(Roles = "Administrator")];
+
+@using ModelLayer
+@using DataAccessLayer
+
+<h3>Products</h3>
+
+
+
+@if(products != null)
+{
+    <table class="table">
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.ProductId</td>
+                <td>@product.Name</td> <td>$@product.Price</td>
+                <td>@product.Description</td> <td>@product.Category</td>
+                <td>
+                    <button class="btn btn-outline-danger btn-sm" @onclick="()=>DeleteProduct(product.ProductId)">Delete</button>
+                    <a href="updateproducts/@product.ProductId.ToString()/@product.Name/@product.Price.ToString()/@product.Description" class="btn btn-outline-warning btn-sm">Update</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    List<ModelProducts> products = new List<ModelProducts>();
+
+    protected override void OnInitialized()
+    {
+        LoadProducts();
+        base.OnInitialized();
+    }
+
+    public void GetProducts()
+    {
+        LoadProducts();
+
+    }
+    public void DeleteProduct(int id)
+    {
+        DalProducts.DeleteProducts(id);
+        LoadProducts();
+    }
+    private void LoadProducts()
+    {
+        products = DalProducts.GetProducts();
+    }
+}

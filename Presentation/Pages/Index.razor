@@ -1,0 +1,54 @@
+﻿@page "/"
+
+<link rel="stylesheet" href="/css/frontPage.css" />
+
+@inject IJSRuntime js
+<PageTitle>Index</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <h1 class="hello"> Hello, @context.User.Identity.Name</h1>
+    </Authorized>
+    <NotAuthorized>
+        <h2 class="welcome">
+            Welcome to bitter
+        </h2>
+    </NotAuthorized>
+</AuthorizeView>
+
+<div>
+    <h3 class="aboutUs">
+        Your premier destination for online auctions and thrilling bidding experiences.
+        At Bitters, we've created a dynamic platform that combines the excitement of bidding with the convenience of online shopping.
+        Whether you're an avid collector searching for rare treasures, a savvy shopper looking for great deals, or an enthusiastic seller ready to showcase your items, Bitters is the place for you.
+        Dive into a world of competitive yet rewarding bidding, discover unique items, and engage with a vibrant community of like-minded enthusiasts.
+        Join us at Bitters and embark on an exhilarating journey of auctions and surprises!
+    </h3>
+</div>
+
+
+@*
+<div>
+    <button class="LoginBtn" >Already have an account?</button>
+</div>
+*@
+
+<AuthorizeView>
+    <Authorized>
+        <br /><br />
+        <button class="btn btn-outline-primary" @onclick="DisplayGreetingAlert">     You Made it     </button>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    private async Task DisplayGreetingAlert()
+    {
+        var authState = await authenticationState;
+        var message = $"Welcome! {authState.User.Identity.Name}";
+        await js.InvokeVoidAsync("alert", message);
+    }
+}

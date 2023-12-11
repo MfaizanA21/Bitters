@@ -1,0 +1,32 @@
+﻿@page "/updateproducts"
+@page "/updateproducts/{id}/{productName}/{price}/{description}"
+@inject NavigationManager nm
+
+<h3>SaveProducts</h3>
+Product Id is @id
+
+<EditForm Model="modelProducts" OnSubmit="UpdateProduct">
+    <input type="text" placeholder="Product Name" @bind-value="productName" />
+    <input type="text" placeholder="price" @bind-value="price" />
+    <input type="text" placeholder="Description" @bind-value="description" />
+    
+    <button type="submit">Update</button>
+
+</EditForm>
+
+@code {
+
+    [Parameter]public string? id{ get; set; }
+    [Parameter] public string? productName{ get; set; }
+    [Parameter] public string? price{ get; set; }
+    [Parameter] public string? description{ get; set; }
+    ModelProducts modelProducts { get; set; } = new ModelProducts();
+
+    private void UpdateProduct()
+    {
+        DalProducts.UpdateProducts(Convert.ToInt32(id),productName,Convert.ToInt32(price), description);
+        //DalProducts.SaveProducts(modelProducts);
+        nm.NavigateTo("simple");
+    }
+}
+

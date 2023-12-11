@@ -1,0 +1,50 @@
+﻿/* Reset some default styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Change to your desired background color */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* Style for the heading */
+h3.Prod-Text {
+    font-size: 300%; /* Adjust the font size as needed */
+    text-align: center;
+    color: #333; /* Change to your desired text color */
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Style for the table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    color: #333;
+    font-family: Arial, sans-serif; /* Set the font to Cursive and provide a fallback font */
+}
+
+    /* Style for table rows and cells */
+    .table th,
+    .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #007bff; /* Header background color */
+        color: #fff; /* Header text color */
+    }
+
+    /* Alternate row background color for better readability */
+    .table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    /* Hover effect on table rows */
+    .table tr:hover {
+        background-color: #e0e0e0;
+    }
