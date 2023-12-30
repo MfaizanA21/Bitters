@@ -1,0 +1,71 @@
+﻿@page "/imageupload"
+@page "/imageupload/{ProductID}"
+
+@using System.IO
+@inject IWebHostEnvironment env
+
+<h3>Blazor Server File Upload</h3>
+<p>ProductID is @ProductID</p>
+
+<h3>@Message</h3>
+<form @onsubmit ="OnSubmit">
+    <InputFile OnChange="OnInputFileChange" multiple ></InputFile>
+    <br />
+    <button type="submit">Upload Selected File</button>
+</form>
+
+@code {
+    int latestProductId;
+    protected override void OnInitialized()
+    {
+        latestProductId = DalProducts.GetLatestProductId();
+    }
+
+    [Parameter] public string? ProductID { get; set; }
+
+    string Message = "No file(s) selected";
+    IReadOnlyList<IBrowserFile>? selectedFiles;
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        selectedFiles = e.GetMultipleFiles();
+        Message = $"{selectedFiles.Count} file(s) selected";
+        this.StateHasChanged();
+    }
+
+    private async void OnSubmit()
+    {
+        foreach(var file in selectedFiles)
+        {
+            var directoryPath = $"{env.WebRootPath}";
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            var path = $"{env.WebRootPath}\\{file.Name}";
+            using (Stream stream = file.OpenReadStream())
+            {
+                using (FileStream fs = File.Create(path))
+                {
+                    await stream.CopyToAsync(fs);
+                }
+            }
+            byte[] imageData;
+            using (FileStream fs = File.OpenRead(path))
+            {
+                imageData = new byte[fs.Length];
+                await fs.ReadAsync(imageData, 0, (int)fs.Length);
+            }
+            saveFileToDatabase(file.Name, path, imageData, latestProductId);
+        }
+        Message = $"{selectedFiles.Count} file(s) upload on server";
+
+        this.StateHasChanged();
+    }
+
+    private void saveFileToDatabase(string fileName, string filePath, byte[] imageData, int productId)
+    {
+        DalProducts.UploadImages(fileName, filePath, imageData, productId);
+    }
+}

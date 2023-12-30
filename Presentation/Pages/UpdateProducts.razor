@@ -1,6 +1,7 @@
 ﻿@page "/updateproducts"
 @page "/updateproducts/{id}/{productName}/{price}/{description}"
 @inject NavigationManager nm
+@attribute [Authorize(Roles = "Administrator")];
 
 <h3>SaveProducts</h3>
 Product Id is @id

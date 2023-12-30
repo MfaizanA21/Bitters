@@ -1,4 +1,6 @@
-﻿@page "/productforuser"
+﻿@inject IWebHostEnvironment env
+@inject NavigationManager navManager
+@page "/productforuser"
 @attribute [Authorize(Roles = "User")];
 
 <link rel="stylesheet" href="/css/ProductforUsers.css" />
@@ -8,29 +10,67 @@
 
 <h3 class="Prod-Text">Products</h3>
 
-<table class="table">
-    @foreach (var product in products)
+
+@{
+    DateTime minExpirationDate = products
+        .Where(p => p.ExpirationDate != DateTime.MinValue)
+        .Min(p => p.ExpirationDate);
+}
+
+<div style="width: 100%; height: 100vh; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; font-family: 'Arial', sans-serif;">
+    @foreach (var product in products.Where(p => p.ExpirationDate == minExpirationDate || p.ExpirationDate == DateTime.MinValue))
     {
-        <tr>
-            <td class="Prod-ID">@product.ProductId</td>
-            <td class="Prod-Name">@product.Name</td>
-            <td class="Prod-Price">$@product.Price</td>
-            <td class="Prod-Desc">@product.Description</td>
-            <td class="Prod-Cat">@product.Category</td>
-        </tr>
+        <div style="border: 1px solid #ddd; padding: 20px; width: 100%; text-align: center; height: 100%;">
+            @foreach (var image in images.Where(img => img.ProductID == product.ProductId))
+            {
+                @if
+               (
+               image.FileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+               image.FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+               image.FileName.EndsWith(".gif", StringComparison.OrdinalIgnoreCase)
+               )
+                {
+                    <img src="@(($"data:image/jpeg;base64,{Convert.ToBase64String(image.imageData)}"))" alt="Image" style="width: 100%; height: 450px; object-fit: cover; border-radius: 10px;" />
+                }
+                else
+                {
+                    <p>@image.ProductID is not associated with any product</p>
+                }
+            }
+            <div style="margin-top: 20px; text-align: left;">
+                <span class="Prod-Name" style="font-weight: bold; font-size: 24px; color: #333;">@product.Name</span>
+                <span class="Prod-Price" style="float: right; font-size: 20px; color: #555;">$@product.Price</span>
+            </div>
+            <p class="Prod-Desc" style="font-size: 18px; margin-top: 10px; color: #777;">@product.Description</p>
+        </div>
     }
-</table>
+</div>
 
 @code {
-    List<ModelProducts> products = new List<ModelProducts>();
+
+    private List<ModelImage> images = new List<ModelImage>();
+
+    private List<ModelProducts> products = new List<ModelProducts>();
 
     protected override void OnInitialized()
     {
+        LoadImages();
         LoadProducts();
+    }
+
+    private void ExiprationCheck()
+    {
+        DalProducts.MoveExpiredProduct();
+    }
+
+    private void LoadImages()
+    {
+        images = DalProducts.GetImages();
     }
 
     private void LoadProducts()
     {
         products = DalProducts.GetProducts();
     }
+
 }
