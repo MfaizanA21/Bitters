@@ -24,6 +24,11 @@
         <div class="mb-3 d-grid gap-2">
             <button @onclick="Authenticate" class="btn btn-primary">Login</button>
         </div>
+
+        <div class="mb-3 text-center">
+            <p>Don't have an account? <a href="/registeruser">Register</a></p>
+        </div>
+
     </div>
 </div>
 
@@ -54,8 +59,9 @@
                     UserName = userAccount.UserName,
                     Role = userAccount.Role,
                 });
-
             navManager.NavigateTo("/", true);
         }
     }
 }
+
+

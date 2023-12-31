@@ -1,0 +1,48 @@
+﻿@page "/registeruser"
+@inject NavigationManager nm
+
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+        <div class="loginText">
+            <h1>REGISTER YOURSELF</h1>
+        </div>
+        <div class="mb-3">
+            <label>User Name</label>
+            <input @bind="model.UserName" class="form-control" placeholder="User Name" />
+        </div>
+        <div class="mb-3">
+            <label>Password</label>
+            <input @bind="model.Password" type="password" class="form-control" placeholder="Password" />
+        </div>
+        <div class="mb-3">
+            <label>Role</label>
+            <select @bind="model.Role" class="form-control">
+                <option value="User">User</option>
+                <option value="Administrator">Administrator</option>
+            </select>
+        </div>
+        <div class="mb-3 d-grid gap-2">
+            <button @onclick="Register" class="btn btn-primary">Register</button>
+        </div>
+        <div class="mb-3 text-center">
+            <p>Already have an account? <a href="/login">Login</a></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RegisterModel model = new RegisterModel();
+
+    public class RegisterModel
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string Role { get; set; } = "User";
+    }
+
+    private void Register()
+    {
+        DalProducts.CreateUser(model.UserName, model.Password, model.Role);
+        nm.NavigateTo("/login");
+    }
+}

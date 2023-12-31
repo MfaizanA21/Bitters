@@ -4,6 +4,7 @@ using System.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace DataAccessLayer
 {
@@ -137,7 +138,7 @@ namespace DataAccessLayer
 				DeleteProducts(expiredProduct.ProductId);
 			}
 		}
-		private static void InsertIntoExpiredProducts(ModelProducts expiredProduct)
+		public static void InsertIntoExpiredProducts(ModelProducts expiredProduct)
         {
             SqlConnection con = DBHelper.GetConnection();
 			con.Open();
@@ -154,15 +155,42 @@ namespace DataAccessLayer
 			cmd.ExecuteNonQuery();
 			con.Close();
         }
-
-		//public static void DeleteExpiredProduct(int productId)
-		//{
-		//	SqlConnection con = DBHelper.GetConnection();
-		//	con.Open();
-		//	SqlCommand cmd = new SqlCommand("DELETE FROM Products WHERE ProductId = @ProductId", con);
-		//	cmd.Parameters.AddWithValue("@ProductId", productId);
-		//	cmd.ExecuteNonQuery ();
-		//	con.Close();
-		//}
+		public static void BidAtProduct(int productId, int newPrice)
+		{
+			SqlConnection con = DBHelper.GetConnection();
+			con.Open();
+			SqlCommand cmd = new SqlCommand("sp_bidPrice", con);
+			cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@productId", productId);
+            cmd.Parameters.AddWithValue("@newPrice", newPrice);
+			cmd.ExecuteNonQuery();
+			con.Close();
+		}
+		public static void saveBidUsers(string userName, int productId, int pricedBid)
+		{
+			DateTime dateOfBid = DateTime.Now;
+			SqlConnection con = DBHelper.GetConnection();
+			con.Open();
+			SqlCommand cmd = new SqlCommand("sp_InsertBidUser", con);
+			cmd.CommandType = CommandType.StoredProcedure;
+			cmd.Parameters.AddWithValue("@userName", userName);
+			cmd.Parameters.AddWithValue("@productId", productId);
+			cmd.Parameters.AddWithValue("@pricedBid", pricedBid);
+			cmd.Parameters.AddWithValue("@dateOfBid", dateOfBid);
+			cmd.ExecuteNonQuery();
+			con.Close();
+		}
+		public static void CreateUser(string userName, string password, string role)
+		{
+			SqlConnection con = DBHelper.GetConnection();
+			con.Open();
+			SqlCommand cmd = new SqlCommand("sp_InsertUser", con);
+			cmd.CommandType = CommandType.StoredProcedure;
+			cmd.Parameters.AddWithValue("@UserName", userName);
+			cmd.Parameters.AddWithValue("@Password", password);
+			cmd.Parameters.AddWithValue("@Role", role);
+			cmd.ExecuteNonQuery();
+			con.Close();
+		}
     }
 }

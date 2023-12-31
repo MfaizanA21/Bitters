@@ -2,6 +2,10 @@
 @inject NavigationManager navManager
 @page "/productforuser"
 @attribute [Authorize(Roles = "User")];
+@inject IJSRuntime js
+@using Microsoft.JSInterop
+
+
 
 <link rel="stylesheet" href="/css/ProductforUsers.css" />
 
@@ -9,7 +13,6 @@
 @using DataAccessLayer
 
 <h3 class="Prod-Text">Products</h3>
-
 
 @{
     DateTime minExpirationDate = products
@@ -39,11 +42,13 @@
             }
             <div style="margin-top: 20px; text-align: left;">
                 <span class="Prod-Name" style="font-weight: bold; font-size: 24px; color: #333;">@product.Name</span>
-                <span class="Prod-Price" style="float: right; font-size: 20px; color: #555;">$@product.Price</span>
+                <span class="Prod-Price" style="font-weight: bold; float: right; font-size: 20px; color: #555;">Priced at: $@product.Price</span>
             </div>
             <p class="Prod-Desc" style="font-size: 18px; margin-top: 10px; color: #777;">@product.Description</p>
         </div>
+        <button class="btn btn-outline-dark btn-lg" @onclick="() => NavigationToBids(product.ProductId.ToString())">Bid</button>
     }
+   
 </div>
 
 @code {
@@ -73,4 +78,55 @@
         products = DalProducts.GetProducts();
     }
 
+    private void NavigationToBids(string ProductId)
+    {
+        navManager.NavigateTo($"/biddings/{ProductId}");
+    }
+
 }
+@* @code {
+
+    [JSInvokable]
+    private void BidPrice(int id, int price)
+    {
+        DalProducts.BidAtProduct(id, price);
+    }
+
+    private async Task OpenPopup(int productId)
+    {
+        await js.InvokeVoidAsync("openPopupWithTextField", DotNetObjectReference.Create(this), productId);
+    }
+
+    private async Task InitializePopupScript()
+    {
+        await js.InvokeVoidAsync("eval", @"
+            window.openPopupWithTextField = function(dotNetRef, productId) {
+                var popup = window.open('', 'PopupWindow', 'width=600,height=400');
+
+                var popupContent = `
+                    <html>
+                        <body>
+                            <label for='textField'>Enter your text:</label>
+                            <input type='number' placeholder='Price' id='textField' />
+                            <br />
+                            <button onclick='updatePrice(dotNetRef)'>Submit</button>
+                        </body>
+                    </html>
+                `;
+
+                popup.document.write(popupContent);
+
+                popup.updatePrice = function(dotNetRef) {
+                    var updatedPrice = popup.document.getElementById('textField').value;
+                    dotNetRef.invokeMethodAsync('BidPrice', productId, updatedPrice);
+                    alert('Text submitted: ' + updatedPrice);
+                };
+            };
+        ");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await InitializePopupScript();
+    }
+} *@

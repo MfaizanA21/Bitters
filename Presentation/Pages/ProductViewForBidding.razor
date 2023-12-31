@@ -1,8 +1,65 @@
 ﻿@page "/biddings"
-@page "/biddings/{id}/{productName}/{price}/{description}"
+@page "/biddings/{ProductId}"
+@attribute [Authorize(Roles = "User")];
+@inject NavigationManager navManager
 
 <h3>ProductViewForBidding</h3>
 
+@for (int i = 0; i < products.Count; i++)
+{
+    var product = products[i];
+
+    if (product.ProductId == Convert.ToInt32(ProductId))
+    {
+        <h4>NOTE: Bids lesser than @product.Price will not be accepted</h4>
+        <input type="number" placeholder="Price" @bind="newPrice" />
+        <button @onclick="() => BidAtProducts(product.ProductId, newPrice, product.Price)">Place Bid</button>
+    }
+}
+
 @code {
+    private DateTime currentTime;
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            userName = user.Identity.Name;
+        }
+    }
+
+    [Inject] private AuthenticationStateProvider authenticationStateProvider { get; set; }
+
+    [Parameter] public string? ProductId { get; set; }
+
+    private int newPrice = 0;
+
+    public ModelBidUsers bidUsers { get; set; } = new ModelBidUsers();
+
+    public List<ModelProducts> products = new List<ModelProducts>();
+
+    private void LoadProducts()
+    {
+        products = DalProducts.GetProducts();
+    }
+
+    protected override void OnInitialized()
+    {
+        LoadProducts();
+    }
+
+    public void BidAtProducts(int id, int price, int oldPrice)
+    {
+        if(price > oldPrice)
+        {
+            DalProducts.BidAtProduct(id, price);
+            DalProducts.saveBidUsers(userName, id, price);
+            navManager.NavigateTo("/productforuser");
+        }    
+    }
 
 }
